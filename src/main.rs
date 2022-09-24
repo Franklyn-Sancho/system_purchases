@@ -1,7 +1,19 @@
 use std::io;
 
+struct TotalCoins {
+    value: f64
+}
+
+/* struct Produto {
+    name: String,
+    value: f64,
+} */
+
+
 fn add_coins() {
-    let mut total_coins = 0;
+    let coins = [0.05, 0.10, 0.25, 0.50, 1.00];
+
+    let mut total_coins = TotalCoins {value: 0.0};
 
     loop {
         println!("Insira uma moeda: ");
@@ -12,12 +24,12 @@ fn add_coins() {
             .read_line(&mut coin)
             .expect("Falha ao ler entrada");
 
-        let coin: u32 = coin.trim().parse().expect("erro ao inserir moeda");
+        let coin: f64 = coin.trim().parse().expect("erro ao inserir moeda");
 
-        if coin > 0 {
-            total_coins = coin + total_coins;
-            println!("Você inseriu {coin} e seu saldo é {total_coins}")
-        } else if coin == 0 {
+        if coins.contains(&coin) {
+            total_coins.value = coin + total_coins.value;
+            println!("Você inseriu {} e seu saldo é {}", coin, total_coins.value);
+        } else if coin == 0.0 {
             buy_product()
         } else {
             println!("Valor inserido é inválido")
@@ -26,6 +38,7 @@ fn add_coins() {
 }
 
 fn buy_product() {
+
     println!("Escolha um produto");
 
     let mut produto = String::new();
@@ -34,11 +47,9 @@ fn buy_product() {
         .read_line(&mut produto)
         .expect("falha na entrada");
 
-    if produto != "" {
-        println!("Obrigado pela preferência, volte sempre")
-    } else {
-        println!("Produto inexistente")
-    }
+    println!("Você comprou {produto}")
+
+
 }
 
 fn main() {
