@@ -1,10 +1,9 @@
-use std::{io, collections::btree_map::Values};
+use std::io;
 
 struct Produto {
     name: String,
     value: f64,
 }
-
 
 fn add_coins(mut saldo: f64) {
     let coins = [0.01, 0.05, 0.10, 0.25, 0.50, 1.00];
@@ -32,34 +31,43 @@ fn add_coins(mut saldo: f64) {
 }
 
 fn buy_product(mut saldo: f64) {
-
-    
-      let chocolate =  Produto {name: String::from("chocolate"), value: 2.50};
-
-    /* let chocolate = Produto { name: String::from("chocolate"), value: 2.50}; */
+    let produtos = [
+        Produto {
+            name: "Biscoito".to_string(),
+            value: 1.5,
+        },
+        Produto {
+            name: "Soda".to_string(),
+            value: 1.0,
+        },
+        Produto {
+            name: "Chocolate".to_string(),
+            value: 2.5,
+        },
+    ];
 
     loop {
         println!("Escolha um produto: ");
 
-        let mut produto = String::new();
+        let mut choice = String::new();
 
         io::stdin()
-            .read_line(&mut produto)
+            .read_line(&mut choice)
             .expect("falha na entrada");
 
-        if  produto.contains("chocolate")
-        {
-            saldo = saldo - chocolate.value;
-            println!("Você comprou {} e seu troco é {}: ", chocolate.name, saldo);
-        } else {
-            println!("Produto Inválido")
+        for choice in produtos.iter() {
+            if saldo >= choice.value {
+                saldo = saldo - choice.value;
+                println!("Seu saldo é {}", saldo)
+            } else {
+                println!("venda não finalizada");
+            }
         }
     }
 }
 
 fn main() {
     let saldo = 0.0;
-
 
     println!("Escolha a sua opção: ");
     println!("1 - inserir moeda");
