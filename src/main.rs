@@ -30,18 +30,18 @@ fn add_coins(mut saldo: f64) {
     }
 }
 
-fn buy_product(mut saldo: f64) {
-    let produtos = [
+fn buy_product(_saldo: f64) {
+    let produtos = vec![
         Produto {
-            name: "Biscoito".to_string(),
+            name: "biscoito".to_string(),
             value: 1.5,
         },
         Produto {
-            name: "Soda".to_string(),
+            name: "soda".to_string(),
             value: 1.0,
         },
         Produto {
-            name: "Chocolate".to_string(),
+            name: "chocolate".to_string(),
             value: 2.5,
         },
     ];
@@ -55,13 +55,18 @@ fn buy_product(mut saldo: f64) {
             .read_line(&mut choice)
             .expect("falha na entrada");
 
-        for choice in produtos.iter() {
-            if saldo >= choice.value {
-                saldo = saldo - choice.value;
-                println!("Seu saldo é {}", saldo)
-            } else {
-                println!("venda não finalizada");
+        let verificar_produto = produtos.iter().find(|p| p.name.trim() == choice.trim());
+
+        match verificar_produto {
+            Some(p) => {
+                if _saldo >= p.value {
+                    let saldo_atual = _saldo - p.value;
+                    println!("seu salto atual é: {}", saldo_atual)
+                } else {
+                    println!("Saldo insuficiente")
+                }
             }
+            None => println!("Produto não encontrado"),
         }
     }
 }
