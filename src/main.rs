@@ -5,74 +5,69 @@ struct Produto {
     value: f64,
 }
 
-fn add_coins(mut saldo: f64) {
-    let coins = [0.01, 0.05, 0.10, 0.25, 0.50, 1.00];
+struct Saldo {
+    saldo: f64,
+}
 
-    loop {
-        println!("Insira uma moeda: ");
-
-        let mut value = String::new();
-
-        io::stdin()
-            .read_line(&mut value)
-            .expect("Falha ao ler entrada");
-
-        let value: f64 = value.trim().parse().expect("valor inválidos");
+impl Saldo {
+    fn add_coins(&mut self, value: f64) {
+        let coins = [0.01, 0.05, 0.10, 0.25, 0.50, 1.00];
 
         if coins.contains(&value) {
-            saldo = value + saldo;
-            println!("Você inseriu {} e seu saldo é {}", value, saldo)
+            self.saldo += value;
+            println!("Você inseriu {} e seu saldo é {}", value, self.saldo)
         } else if value == 0.0 {
-            buy_product(saldo);
+            self.buy_product();
         } else {
             println!("Valor inválido")
         }
     }
-}
 
-fn buy_product(_saldo: f64) {
-    let produtos = vec![
-        Produto {
-            name: "biscoito".to_string(),
-            value: 1.5,
-        },
-        Produto {
-            name: "soda".to_string(),
-            value: 1.0,
-        },
-        Produto {
-            name: "chocolate".to_string(),
-            value: 2.5,
-        },
-    ];
+    fn buy_product(&mut self) {
+        let produtos = vec![
+            Produto {
+                name: "biscoito".to_string(),
+                value: 1.5,
+            },
+            Produto {
+                name: "soda".to_string(),
+                value: 1.0,
+            },
+            Produto {
+                name: "chocolate".to_string(),
+                value: 2.5,
+            },
+        ];
 
-    loop {
-        println!("Escolha um produto: ");
+        loop {
+            println!("Escolha um produto: ");
 
-        let mut choice = String::new();
+            let mut choice = String::new();
 
-        io::stdin()
-            .read_line(&mut choice)
-            .expect("falha na entrada");
+            io::stdin()
+                .read_line(&mut choice)
+                .expect("falha na entrada");
 
-        let verificar_produto = produtos.iter().find(|p| p.name.trim() == choice.trim());
+            let verificar_produto = produtos.iter().find(|p| p.name.trim() == choice.trim());
 
-        match verificar_produto {
-            Some(p) => {
-                if _saldo >= p.value {
-                    let saldo_atual = _saldo - p.value;
-                    println!("seu salto atual é: {}", saldo_atual)
-                } else {
-                    println!("Saldo insuficiente")
+            match verificar_produto {
+                Some(p) => {
+                    if self.saldo >= p.value {
+                        let saldo_atual = self.saldo - p.value;
+                        println!("seu salto atual é: {}", saldo_atual);
+                        self.saldo = saldo_atual;
+                    } else {
+                        println!("Saldo insuficiente")
+                    }
                 }
+                None => println!("Produto não encontrado"),
             }
-            None => println!("Produto não encontrado"),
         }
     }
 }
 
 fn main() {
-    let saldo = 0.0;
+    let mut saldo = Saldo { saldo: 0.0 };
 
     println!("Escolha a sua opção: ");
     println!("1 - inserir moeda");
@@ -84,11 +79,24 @@ fn main() {
         .read_line(&mut option)
         .expect("falha na entrada");
 
-    if option.contains("1") {
-        add_coins(saldo)
-    } else if option.contains("2") {
-        buy_product(saldo)
-    } else {
-        println!("Opção inválida!")
+    match option.trim() {
+        "1" => loop {
+            println!("Insira uma moeda: ");
+
+            let mut value = String::new();
+
+            io::stdin()
+                .read_line(&mut value)
+                .expect("Falha ao ler entrada");
+
+            let value: f64 = match value.trim().parse() {
+                Ok(num) => num,
+                Err(_) => continue,
+            };
+
+            saldo.add_coins(value);
+        },
+        "2" => saldo.buy_product(),
+        _ => println!("Opção inválida!"),
     }
 }
