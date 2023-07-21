@@ -1,5 +1,13 @@
 use std::io::{self, Write};
 
+use VENDING_MACHINE::{
+    database::database::Database,
+    menus::menus::login_register_menu
+    };
+use rusqlite::Error;
+
+
+
 //struct dos produtos
 struct Produto {
     name: String,
@@ -10,6 +18,7 @@ struct Produto {
 struct Saldo {
     saldo: f64,
     produtos: Vec<Produto>,
+    coins: [f64; 6],
 }
 
 //* métodos da struct Saldo por implementação
@@ -32,6 +41,7 @@ impl Saldo {
                     value: 2.5,
                 },
             ],
+            coins: [0.01, 0.05, 0.10, 0.25, 0.50, 1.00],
         }
     }
 
@@ -41,16 +51,13 @@ impl Saldo {
     }
 
     //verifica se é uma moeda -> se for, executa o add_coin
-    fn is_coin(input: &str) -> bool {
-        let coins = ["0.01", "0.05", "0.10", "0.25", "0.50", "1.00"];
-        coins.contains(&input.trim())
+    fn is_coin(&self, input: &str) -> bool {
+        self.coins.contains(&input.trim().parse().unwrap())
     }
 
     //função responsável por adicionar moedas no saldo
     fn add_coins(&mut self, value: f64) {
-        let coins = [0.01, 0.05, 0.10, 0.25, 0.50, 1.00];
-
-        if coins.contains(&value) {
+        if self.coins.contains(&value) {
             self.saldo += value;
             println!("Você inseriu {} e seu saldo é {}", value, self.saldo)
         } else {
@@ -78,14 +85,18 @@ impl Saldo {
             None => println!("Produto não encontrado"),
         }
     }
-
-   
 }
 
-fn main() {
-    let mut saldo = Saldo::new();
+fn main() -> Result<(), Error> {
+    /* let mut item = Saldo::new();
+ */
+    let db = Database::new("database.db")?;
 
-    loop {
+    db.create_tables();
+
+    login_register_menu(&db);
+
+    /* loop {
         let mut input = String::new();
 
         print!("Insira uma moeda ou compre um produto: ");
@@ -95,13 +106,15 @@ fn main() {
             .read_line(&mut input)
             .expect("Falha ao ler entrada");
 
-        if saldo.is_product(&input) {
-            saldo.buy_product(&input);
-        } else if Saldo::is_coin(&input) {
+        if item.is_product(&input) {
+            item.buy_product(&input);
+        } else if item.is_coin(&input) {
             let value: f64 = input.trim().parse().unwrap();
-            saldo.add_coins(value);
+            item.add_coins(value);
         } else {
             println!("Entrada inválida!");
         }
-    }
+    } */
+
+    Ok(())
 }
