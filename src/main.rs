@@ -2,7 +2,7 @@ use std::io::{self, Write};
 
 use VENDING_MACHINE::{
     database::database::Database,
-    menus::menus::login_register_menu
+    menus::menus::login_register_menu, models::user_model::User
     };
 use rusqlite::Error;
 
@@ -91,6 +91,8 @@ fn main() -> Result<(), Error> {
     /* let mut item = Saldo::new();
  */
     let db = Database::new("database.db")?;
+
+    User::create_user(&db, "admin_id", "admin@admin.com", "password_hash", true);
 
     db.create_tables();
 

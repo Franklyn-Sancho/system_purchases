@@ -13,7 +13,7 @@ impl Database {
     pub fn create_tables(&self) -> Result<(), rusqlite::Error> {
         self.conn.execute(
             "CREATE TABLE IF NOT EXISTS users (
-                id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, password TEXT NOT NULL
+                id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, password TEXT NOT NULL, is_admin INTEGER NOT NULL DEFAULT 0
             )",
             [],
         )?;

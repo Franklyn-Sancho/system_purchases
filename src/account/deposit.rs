@@ -1,7 +1,4 @@
-use crate::{
-    database::database::Database,
-    utils::read_input::read_input,
-};
+use crate::{database::database::Database, utils::read_input::read_input};
 
 use super::account::Account;
 

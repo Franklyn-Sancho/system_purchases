@@ -10,6 +10,7 @@ rusqlite = "0.29.0"
 bcrypt = "0.10.1"
 chrono = "0.4"
 chrono-tz = "0.5"
+prettytable-rs = "*"
 
 [dependencies.uuid]
 version = "1.4.0"

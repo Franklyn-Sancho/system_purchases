@@ -5,6 +5,10 @@ pub mod account {
     pub mod deposit;
 }
 
+pub mod purchase {
+    pub mod purchase;
+}
+
 pub mod database {
     pub mod database;
 }
