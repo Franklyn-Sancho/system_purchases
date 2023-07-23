@@ -34,9 +34,9 @@ impl Database {
 
         self.conn.execute(
             "CREATE TABLE IF NOT EXISTS transactions (
-                    id TEXT PRIMARY KEY, 
-                    user_id INTEGER NOT NULL, 
-                    product_id INTEGER, 
+                    transaction_id TEXT PRIMARY KEY, 
+                    user_id TEXT NOT NULL, 
+                    product_id TEXT, 
                     transaction_type TEXT NOT NULL, 
                     transaction_date TEXT NOT NULL, 
                     transaction_amount REAL NOT NULL,

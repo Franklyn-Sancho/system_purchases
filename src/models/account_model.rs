@@ -18,7 +18,7 @@ pub fn create_account(db: &Database, user_id: &str) -> Account {
         )
         .unwrap();
 
-    Account::new(account_id, 0.0)
+    Account::new(account_id, user_id.to_string(), 0.0)
 }
 
 pub fn get_account_by_user(db: &Database, user_id: &str) -> Option<Account> {
@@ -26,7 +26,7 @@ pub fn get_account_by_user(db: &Database, user_id: &str) -> Option<Account> {
         .query_row(
             "SELECT id, balance FROM account WHERE user_id = ?1",
             [user_id],
-            |row| Ok(Account::new(row.get(0)?, row.get(1)?)),
+            |row| Ok(Account::new(row.get(0)?, user_id.to_string(), row.get(1)?)),
         )
         .ok()
 }

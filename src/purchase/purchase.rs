@@ -1,9 +1,9 @@
-use std::io::{self, Write};
-
+use chrono::Utc;
 use prettytable::{Table, row};
 use rusqlite::params;
+use uuid::Uuid;
 
-use crate::{account::account::Account, database::database::Database, models::product_model::Product, utils::read_input::read_input};
+use crate::{account::account::Account, database::database::Database, models::{product_model::Product, transactions_model::{Transactions, TransactionKind, create_transactions}}, utils::read_input::read_input};
 
 pub fn select_product(db: &Database) -> String {
     display_products(&db);
@@ -33,6 +33,9 @@ pub fn purchase_product(
     Account::update_balance(db, account, -price);
     // Atualiza a quantidade do produto no banco de dados
     update_product_quantity(db, product_id, product_quantity - 1);
+
+    create_purchase_transaction(db, account, product_id, price);
+
     Ok(())
 }
 
@@ -78,4 +81,21 @@ fn display_products(db: &Database) {
         table.add_row(row![name, price, quatity]);
     }
     table.printstd()
+}
+
+pub fn create_purchase_transaction(
+    db: &Database,
+    account: &Account,
+    product_id: &str,
+    value: f64,
+) {
+    let transaction = Transactions {
+        transaction_id: Uuid::new_v4().to_string(),
+        user_id: account.user_id.clone(),
+        product_id: product_id.to_string(),
+        transaction_type: TransactionKind::Purchase,
+        transaction_date: Utc::now(),
+        transaction_amount: value as f32,
+    };
+    create_transactions(db, &transaction);
 }

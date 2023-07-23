@@ -21,6 +21,7 @@ pub mod models {
     pub mod user_model;
     pub mod product_model;
     pub mod account_model;
+    pub mod transactions_model;
 }
 
 pub mod authenticate {

@@ -21,7 +21,7 @@ pub fn register_user(db: &Database) {
 
     let user_id = Uuid::new_v4().to_string();
 
-    User::create_user(db, &user_id, &email, &password_hash, false);
+    User::create_user(db, &user_id, &email, &password_hash, true);
 
     println!("Usuário registrado com sucesso! {}", user_id);
 }

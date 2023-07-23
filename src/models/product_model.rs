@@ -1,5 +1,3 @@
-use std::io::{self, Write};
-
 use rusqlite::params;
 use uuid::Uuid;
 

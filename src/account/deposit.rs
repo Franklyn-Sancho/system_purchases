@@ -1,4 +1,7 @@
-use crate::{database::database::Database, utils::read_input::read_input};
+use chrono::Utc;
+use uuid::Uuid;
+
+use crate::{database::database::Database, utils::read_input::read_input, models::transactions_model::{Transactions, TransactionKind, create_transactions}};
 
 use super::account::Account;
 
@@ -7,10 +10,31 @@ pub fn deposit(db: &Database, account: &mut Account, value: f64) -> Result<(), S
         return Err(format!("Só aceitamos cédulas de {:?}", account.coins));
     }
 
-    Account::update_balance(db, account, value);
+    deposit_money(db, account, value);
 
     Ok(())
 }
+
+pub fn deposit_money(db: &Database, account: &mut Account, value: f64) {
+    // Add the deposit amount to the account balance
+    Account::update_balance(db, account, value);
+
+    // Create a new transaction for the deposit
+    let transaction = Transactions {
+        transaction_id: Uuid::new_v4().to_string(),
+        user_id: account.user_id.clone(),
+        product_id: "".to_string(),
+        transaction_type: TransactionKind::Deposit,
+        transaction_date: Utc::now(),
+        transaction_amount: value as f32,
+    };
+    println!(
+        "Criando transação de depósito com ID {}",
+        transaction.transaction_id
+    );
+    create_transactions(db, &transaction)
+}
+
 
 pub fn deposit_input(db: &Database, account: &mut Account) {
     loop {
@@ -20,7 +44,8 @@ pub fn deposit_input(db: &Database, account: &mut Account) {
             break;
         }
         if let Ok(value) = value.parse::<f64>() {
-            Account::update_balance(db, account, value);
+            // Adicionar o valor do depósito ao saldo da conta
+            deposit_money(db, account, value);
             println!(
                 "Você depositou {:.2} e seu saldo é de {:.2}",
                 value, account.balance
@@ -30,3 +55,4 @@ pub fn deposit_input(db: &Database, account: &mut Account) {
         }
     }
 }
+
