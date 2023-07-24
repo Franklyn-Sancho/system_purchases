@@ -3,7 +3,10 @@ use prettytable::{Table, row};
 use rusqlite::params;
 use uuid::Uuid;
 
-use crate::{account::account::Account, database::database::Database, models::{product_model::Product, transactions_model::{Transactions, TransactionKind, create_transactions}}, utils::read_input::read_input};
+use crate::{
+    models::{account_model::Account, product_model::Product, transactions_model::{Transactions, TransactionKind}}, 
+    database::database::Database, utils::read_input::read_input, 
+};
 
 pub fn select_product(db: &Database) -> String {
     display_products(&db);
@@ -97,5 +100,6 @@ pub fn create_purchase_transaction(
         transaction_date: Utc::now(),
         transaction_amount: value as f32,
     };
-    create_transactions(db, &transaction);
+    Transactions::create_transactions(db, &transaction);
 }
+

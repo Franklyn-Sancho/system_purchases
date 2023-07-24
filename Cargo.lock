@@ -10,6 +10,7 @@ dependencies = [
  "chrono",
  "chrono-tz",
  "prettytable-rs",
+ "regex",
  "rusqlite",
  "uuid",
 ]

@@ -1,11 +1,7 @@
 mod tests;
 
-pub mod account {
-    pub mod account;
+pub mod actions {
     pub mod deposit;
-}
-
-pub mod purchase {
     pub mod purchase;
 }
 
@@ -18,10 +14,10 @@ pub mod menus {
 }
 
 pub mod models {
-    pub mod user_model;
-    pub mod product_model;
     pub mod account_model;
+    pub mod product_model;
     pub mod transactions_model;
+    pub mod user_model;
 }
 
 pub mod authenticate {

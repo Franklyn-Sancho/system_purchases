@@ -1,13 +1,12 @@
 use crate::{
-    account::{account::Account, deposit::deposit_input},
     authenticate::auth::{authenticate, register_user},
     database::database::Database,
     models::{
-        account_model::{create_account, get_account_by_user},
-        product_model::Product, transactions_model::{create_transactions, get_transactions, Transactions},
+        account_model::Account,
+        product_model::Product, transactions_model::Transactions,
+
     },
-    purchase::purchase::{purchase_product, select_product},
-    utils::read_input::read_input,
+    utils::read_input::read_input, actions::{deposit::deposit_input, purchase::{select_product, purchase_product}},
 };
 
 pub fn login_register_menu(db: &Database) {
@@ -25,18 +24,7 @@ pub fn login_register_menu(db: &Database) {
                     register_user(db);
                 }
                 2 => {
-                    if let Some(user) = authenticate(db) {
-                        let mut account = get_account_by_user(db, &user.id)
-                            .unwrap_or_else(|| create_account(db, &user.id));
-                        if user.is_admin {
-                            vending_machine_admin_menu(db)
-                        } else {
-                            machine_vending_menu(db, &mut account)
-                        }
-                        break;
-                    } else {
-                        println!("Nome de usuário ou senha inválidos");
-                    }
+                    authenticate(db);
                 }
                 3 => break,
                 _ => println!("Opção inválida"),
@@ -74,7 +62,7 @@ pub fn machine_vending_menu(db: &Database, account: &mut Account) {
                     }
                 }
                 3 => {
-                    let transactions = get_transactions(db, account.user_id.clone());
+                    let transactions = Transactions::get_transactions_to_user(db, account.user_id.clone());
                     for transaction in transactions {
                         println!("{}", transaction);
                     }
@@ -99,14 +87,12 @@ pub fn vending_machine_admin_menu(db: &Database) {
     let option = read_input("");
     if let Ok(option) = option.parse() {
         match option {
-            1 => {
-                Product::create_product(db)
-            }
+            1 => Product::create_product(db),
             2 => {
-                /* let transactions = get_transactions(db);
-                    for transaction in transactions {
-                        println!("{:?}", transaction)
-                    } */
+                let transactions = Transactions::get_all_transactions_to_admin(db);
+                for transaction in transactions {
+                    println!("{}", transaction);
+                }
             }
             _ => print!("Opção inválida"),
         }

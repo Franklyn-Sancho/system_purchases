@@ -1,9 +1,11 @@
 use chrono::Utc;
 use uuid::Uuid;
 
-use crate::{database::database::Database, utils::read_input::read_input, models::transactions_model::{Transactions, TransactionKind, create_transactions}};
+use crate::{
+    database::database::Database, 
+    utils::read_input::read_input, models::{account_model::Account, transactions_model::{Transactions, TransactionKind}},  
+};
 
-use super::account::Account;
 
 pub fn deposit(db: &Database, account: &mut Account, value: f64) -> Result<(), String> {
     if !account.is_valid_coin(value) {
@@ -28,11 +30,7 @@ pub fn deposit_money(db: &Database, account: &mut Account, value: f64) {
         transaction_date: Utc::now(),
         transaction_amount: value as f32,
     };
-    println!(
-        "Criando transação de depósito com ID {}",
-        transaction.transaction_id
-    );
-    create_transactions(db, &transaction)
+    Transactions::create_transactions(db, &transaction)
 }
 
 
