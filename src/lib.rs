@@ -3,6 +3,7 @@ mod tests;
 pub mod actions {
     pub mod deposit;
     pub mod purchase;
+    pub mod product;
 }
 
 pub mod database {
